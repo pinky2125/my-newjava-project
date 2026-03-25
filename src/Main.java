@@ -1,3 +1,8 @@
+class InsufficientBalanceException extends Exception {
+	public InsufficientBalanceException(String msg) {
+		super(msg);
+	}
+}
 class BankAccount {
 	private String name;
 	private double balance;
@@ -12,13 +17,15 @@ class BankAccount {
 		System.out.println("Deposited:  "+ amount);
 	}
 	
-	public void withdraw(double amount) {
-		if(amount <=balance) {
-			balance = balance - amount;
-			System.out.println("Withdrawn : "+amount);
-		}else {
-			System.out.println("Insufficient Balance");
+	public void withdraw(double amount)throws InsufficientBalanceException {
+		if(amount <=0) {
+			throw new InsufficientBalanceException("Invalid amount!");
 		}
+		if(amount > balance) {
+			throw new InsufficientBalanceException("Insufficient Balance! ");
+		}
+		balance = balance - amount;
+		System.out.println("Withdrawn : "+amount);
 	}
 	public void showBalance() {
 		System.out.println("Balance: "+balance);
@@ -35,15 +42,24 @@ public class Main {
 
 		BankAccount acc1 = new BankAccount("Pinku",1000);
 		BankAccount acc2 = new BankAccount("pinky",2000);
-		acc1.checkAccountHolder();
-		acc1.showBalance();
-		acc1.deposit(500);
-		acc1.withdraw(300);
-		acc1.showBalance();
+		
+		try {
+			acc1.checkAccountHolder();
+			
+			
+			acc1.deposit(500);
+			acc1.withdraw(300);
+			acc1.withdraw(2000); //error part
+			
+		}catch(Exception e) {
+			System.out.println("Error: "+e.getMessage());
+		}
+		
+		
 		acc2.checkAccountHolder();
 		acc2.showBalance();
 		acc2.deposit(500);
-		acc2.withdraw(200);
+//		acc2.withdraw(200);
 		acc2.showBalance();
 		
 		
